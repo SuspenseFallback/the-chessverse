@@ -22,6 +22,7 @@ import piecemove from "../assets/sounds/piecemove.mp3";
 import { ratingCalculate } from "../helpers/ratingCalculator";
 import useSound from "use-sound";
 import { v4 as uuidv4 } from "uuid";
+import CustomBoard from "../components/CustomBoard/CustomBoard";
 
 let backup_data = false;
 
@@ -32,7 +33,7 @@ const Play = () => {
   const [loading, setLoading] = useState(true);
   const query = useQuery();
 
-  const [game, set_game] = React.useState(new Chess());
+  const [game, set_game] = useState(new Chess());
   const [position, set_position] = useState("start");
   const [start, set_start] = useState(false);
   const [game_end, set_game_end] = useState(false);
@@ -438,64 +439,72 @@ const Play = () => {
   };
 
   let onDrop = (sourceSquare, targetSquare) => {
-    let move = null;
-    safeGameMutate((game) => {
-      move = game.move({
-        from: sourceSquare,
-        to: targetSquare,
-        promotion: "q",
-      });
-
-      if (move === null) {
-        console.log("move is null");
-        return "snapback";
-      } else {
-        if (backup_data.color === "w") {
-          set_white_time((t) => t + custom_increment);
-        } else {
-          set_black_time((t) => t + custom_increment);
-        }
-
-        console.log(game.fen());
-        set_position(game.fen());
-        set_history((h) => [...h, game.fen()]);
-        console.log(active_move + 1);
-        set_active_move((m) => m + 1);
-        set_turn(!turn);
-        playPieceMove();
-        socket.emit("new move", {
-          socketid: backup_data.socketid,
+    if (game.turn() === backup_data.color) {
+      let move = null;
+      safeGameMutate((game) => {
+        move = game.move({
           from: sourceSquare,
           to: targetSquare,
-          time: custom_time,
           promotion: "q",
         });
-      }
-    });
 
-    if (takeback_offer) {
-      takeback_reject();
-    }
-    if (draw_offer) {
-      draw_reject();
-    }
+        console.log(move);
 
-    if (game.game_over()) {
-      if (game.in_checkmate()) {
-        set_game_result(backup_data.color === "w" ? "1-0" : "0-1");
-        set_game_reason("by checkmate");
-      } else if (game.in_stalemate()) {
-        set_game_result(backup_data.color === "w" ? "1/2-1/2" : "1/2-1/2");
-        set_game_reason("by stalemate");
-      } else if (game.in_threefold_repetition()) {
-        set_game_result(backup_data.color === "w" ? "1/2-1/2" : "1/2-1/2");
-        set_game_reason("by threefold");
-      } else if (game.insufficient_material()) {
-        set_game_result(backup_data.color === "w" ? "1/2-1/2" : "1/2-1/2");
-        set_game_reason("by insufficient");
+        if (move === null) {
+          console.log("move is null");
+          set_position(position);
+          return "snapback";
+        } else {
+          if (backup_data.color === "w") {
+            set_white_time((t) => t + custom_increment);
+          } else {
+            set_black_time((t) => t + custom_increment);
+          }
+
+          console.log(game.fen());
+          set_position(game.fen());
+          set_history((h) => [...h, game.fen()]);
+          console.log(active_move + 1);
+          set_active_move((m) => m + 1);
+          set_turn(!turn);
+          playPieceMove();
+          socket.emit("new move", {
+            socketid: backup_data.socketid,
+            from: sourceSquare,
+            to: targetSquare,
+            time: custom_time,
+            promotion: "q",
+          });
+        }
+      });
+
+      if (takeback_offer) {
+        takeback_reject();
       }
+      if (draw_offer) {
+        draw_reject();
+      }
+
+      if (game.game_over()) {
+        if (game.in_checkmate()) {
+          set_game_result(backup_data.color === "w" ? "1-0" : "0-1");
+          set_game_reason("by checkmate");
+        } else if (game.in_stalemate()) {
+          set_game_result(backup_data.color === "w" ? "1/2-1/2" : "1/2-1/2");
+          set_game_reason("by stalemate");
+        } else if (game.in_threefold_repetition()) {
+          set_game_result(backup_data.color === "w" ? "1/2-1/2" : "1/2-1/2");
+          set_game_reason("by threefold");
+        } else if (game.insufficient_material()) {
+          set_game_result(backup_data.color === "w" ? "1/2-1/2" : "1/2-1/2");
+          set_game_reason("by insufficient");
+        }
+      }
+      return true;
+    } else {
+      set_position(position);
+      return "snapback";
     }
-    return true;
   };
 
   let onOpponentMove = (sourceSquare, targetSquare) => {
@@ -711,36 +720,38 @@ const Play = () => {
         </p>
       </Dialog>
       <Toast ref={toast} />
-      <PlayPanel
-        start={start}
-        game_end={game_end}
-        startGame={startGame}
-        set_time={set_time}
-        time={custom_time}
-        custom_increment={custom_increment}
-        set_custom_increment={set_custom_increment}
-        mode={mode}
-        set_mode={set_new_mode}
-        send_message={send_message}
-        send_lobby_message={send_lobby_message}
-        chat={chat}
-        lobby_chat={lobby_chat}
-        game={game}
-        data={backup_data}
-        resign={resign}
-        takeback={takeback}
-        next_game={next_game}
-        draw_offer={draw}
-        history={history}
-        active_move={active_move}
-        first_move={first_move}
-        last_move={last_move}
-        prev_move={prev_move}
-        next_move={next_move}
-        preferred_color={preferred_color}
-        set_preferred_color={set_preferred_color}
-        share={share}
-      />
+      <div className="play-panel-container">
+        <PlayPanel
+          start={start}
+          game_end={game_end}
+          startGame={startGame}
+          set_time={set_time}
+          time={custom_time}
+          custom_increment={custom_increment}
+          set_custom_increment={set_custom_increment}
+          mode={mode}
+          set_mode={set_new_mode}
+          send_message={send_message}
+          send_lobby_message={send_lobby_message}
+          chat={chat}
+          lobby_chat={lobby_chat}
+          game={game}
+          data={backup_data}
+          resign={resign}
+          takeback={takeback}
+          next_game={next_game}
+          draw_offer={draw}
+          history={history}
+          active_move={active_move}
+          first_move={first_move}
+          last_move={last_move}
+          prev_move={prev_move}
+          next_move={next_move}
+          preferred_color={preferred_color}
+          set_preferred_color={set_preferred_color}
+          share={share}
+        />
+      </div>
       <div className="game">
         <div className="player opp">
           <p className="opp name">
@@ -787,13 +798,12 @@ const Play = () => {
           />
         </div>
         <div className="game-board-container">
-          <Board
+          <CustomBoard
             color={backup_data ? backup_data.color : "w"}
             isInteractive={start && !game_end}
-            position={position}
             game={game}
-            arrows={true}
             onDrop={onDrop}
+            position={game.fen()}
           />
         </div>
 

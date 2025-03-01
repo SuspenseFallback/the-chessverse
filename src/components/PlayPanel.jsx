@@ -12,6 +12,14 @@ import { Slider } from "primereact/slider";
 import { UseAuth } from "../firebase/firebase";
 import { confirmPopup } from "primereact/confirmpopup";
 import useQuery from "../hooks/queryParams";
+import resignIcon from "../assets/images/resign.svg";
+import takebackIcon from "../assets/images/takeback.svg";
+import drawIcon from "../assets/images/draw.svg";
+import chatIcon from "../assets/images/chat.svg";
+import blockIcon from "../assets/images/block.svg";
+import reportIcon from "../assets/images/report.svg";
+import shareIcon from "../assets/images/share.svg";
+import playIcon from "../assets/images/play.svg";
 
 const PlayPanel = ({
   startGame,
@@ -112,7 +120,6 @@ const PlayPanel = ({
   };
 
   const onKeyDown = (e) => {
-    console.log(e);
     if (e.keyCode === 13) {
       if (lobby === "game") {
         send_message(msg);
@@ -120,6 +127,8 @@ const PlayPanel = ({
         send_lobby_message(msg);
       }
       set_msg("");
+    } else {
+      set_msg(e.target.value);
     }
   };
 
@@ -215,83 +224,86 @@ const PlayPanel = ({
                   className="flex flex-wrap justify-content-between"
                   style={{ width: "100%" }}
                 >
-                  <Button
-                    icon="pi pi-flag"
-                    className="p-button-danger"
+                  <button
+                    className="small-button"
                     tooltip="Resign"
                     onClick={resignConfirm}
-                    disabled={game_end || game.history().length <= 20}
-                    tooltipOptions={{ position: "top" }}
-                  />
-                  <Button
-                    icon="pi pi-undo"
-                    className="p-button-warning takeback-offer"
+                    disabled={game_end || game.history().length <= 2}
+                  >
+                    <img src={resignIcon} className="icon" alt="Resign" />
+                  </button>
+                  <button
+                    className="small-button takeback-offer"
                     tooltip="Takeback offer"
                     disabled={game_end || game.history().length <= 2}
                     onClick={takebackConfirm}
-                    tooltipOptions={{ position: "top" }}
-                  />
-                  <Button
-                    icon="pi pi-question"
-                    className="p-button-info draw-offer"
+                  >
+                    <img src={takebackIcon} className="icon" alt="Takeback" />
+                  </button>
+                  <button
+                    className="small-button draw-offer"
                     onClick={drawConfirm}
                     tooltip="Draw offer"
                     disabled={
                       game_end ||
                       draw_offer_count >= 3 /* || game.history().length <= 20 */
                     }
-                    tooltipOptions={{ position: "top" }}
-                  />
-                  <Button
-                    icon="pi pi-comments"
-                    className="p-button-secondary"
+                  >
+                    <img src={drawIcon} className="icon" alt="Draw" />
+                  </button>
+                  <button
+                    className="small-button"
                     tooltip="Chat"
                     onClick={() => {
                       set_active(1);
                       set_lobby("game");
                     }}
-                    tooltipOptions={{ position: "top" }}
-                  />
+                  >
+                    <img src={chatIcon} className="icon" alt="Chat" />
+                  </button>
                 </div>
                 <div
-                  className="flex flex-wrap justify-content-between"
+                  className="line"
                   style={{ width: "100%", marginTop: "5%" }}
                 >
-                  <Button
-                    icon="pi pi-shield"
-                    className="p-button-danger"
-                    tooltipOptions={{ position: "bottom" }}
+                  <button
+                    className="small-button"
                     tooltip="Block"
                     disabled={!user}
-                  />
-                  <Button
-                    icon="pi pi-ban"
-                    className="p-button-warning"
-                    tooltipOptions={{ position: "bottom" }}
+                  >
+                    <img src={blockIcon} className="icon" alt="Block" />
+                  </button>
+                  <button
+                    className="small-button"
                     tooltip="Report"
                     disabled={!user}
-                  />
-                  <Button
-                    icon="pi pi-share-alt"
-                    className="p-button-info"
-                    tooltipOptions={{ position: "bottom" }}
+                  >
+                    <img src={reportIcon} className="icon" alt="Report" />
+                  </button>
+                  <button
+                    className="small-button"
                     tooltip="Share"
                     onClick={share}
-                  />
-                  <Button
-                    icon="pi pi-user-plus"
-                    className="p-button-secondary"
-                    tooltipOptions={{ position: "bottom" }}
+                  >
+                    <img src={shareIcon} className="icon" alt="Share" />
+                  </button>
+                  <button
+                    className="small-button"
                     tooltip="Friend"
                     disabled={!user}
-                  />
-                  <Button
-                    style={{ marginTop: "5%", width: "100%" }}
-                    label="Next game"
-                    disabled={!game_end}
-                    onClick={next_game}
-                  />
+                  >
+                    <img src={playIcon} className="icon" alt="Friend" />
+                  </button>
                 </div>
+
+                <button
+                  className="btn-block"
+                  disabled={!game_end}
+                  onClick={next_game}
+                  style={{ marginTop: "vh" }}
+                >
+                  Next game
+                </button>
               </div>
             </div>
           </div>
@@ -380,9 +392,9 @@ const PlayPanel = ({
           </div>
         )}
       </TabPanel>
-      <TabPanel header="CHAT">
-        <div className="chat">
-          <div className="messages">
+      <TabPanel header="CHAT" className="chat-panel">
+        <div className="chat-panel-container">
+          <div className="top">
             <Dropdown
               value={lobby}
               options={[
@@ -393,68 +405,47 @@ const PlayPanel = ({
                 set_lobby(e.value);
               }}
               placeholder={query.get("time")}
-              style={{
-                width: "100%",
-                position: "absolute",
-                left: 0,
-                top: "9%",
-                borderRadius: "0",
-              }}
+              style={{ width: "100%" }}
             />
-            <div className="chat-room">
-              {lobby === "game"
-                ? chat.map((msg, index) => {
-                    if (msg.type === "system") {
-                      return (
-                        <p className="system-announcement" key={index}>
-                          {msg.msg}
-                        </p>
-                      );
-                    }
-                    return (
-                      <p key={index}>
-                        <span>{msg.time}</span> {msg.username}: {msg.msg}
-                      </p>
-                    );
-                  })
-                : lobby_chat.map((msg, index) => {
-                    console.log(lobby_chat);
-                    return (
-                      <p key={index}>
-                        <span>{msg.time}</span> {msg.username}: {msg.msg}
-                      </p>
-                    );
-                  })}
-            </div>
           </div>
-          <div className="input">
+          <div className="chat-room">
+            {lobby === "game"
+              ? chat.map((msg, index) => {
+                  if (msg.type === "system") {
+                    return (
+                      <p className="system-announcement" key={index}>
+                        {msg.msg}
+                      </p>
+                    );
+                  }
+                  return (
+                    <p key={index}>
+                      <span>{msg.time}</span> {msg.username}: {msg.msg}
+                    </p>
+                  );
+                })
+              : lobby_chat.map((msg, index) => {
+                  console.log(lobby_chat);
+                  return (
+                    <p key={index}>
+                      <span>{msg.time}</span> {msg.username}: {msg.msg}
+                    </p>
+                  );
+                })}
+          </div>
+          <div className="input-container">
             <input
               type="text"
-              placeholder="Please enter your message here..."
-              onChange={(e) => onChat(e)}
+              placeholder="Please enter a message..."
               onKeyDown={(e) => onKeyDown(e)}
-              value={msg}
+              className="input left"
             />
-            <Button
-              icon="pi pi-send"
-              style={{
-                position: "absolute",
-                bottom: "-1.8%",
-                right: 0,
-                width: "3.5vw",
-                height: "3.1vw",
-                borderRadius: "0",
-              }}
-              onClick={() => {
-                if (lobby === "game") {
-                  send_message(msg);
-                } else {
-                  send_lobby_message(msg);
-                }
-                set_msg("");
-              }}
-              disabled={(lobby === "game" && !start) || !msg || msg.length > 40}
-            />
+            <div
+              className="icon-container right flex align-center justify-center"
+              onClick={onChat}
+            >
+              <i className="icon pi pi-send"></i>
+            </div>
           </div>
         </div>
       </TabPanel>

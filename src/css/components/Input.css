@@ -5,14 +5,23 @@
   border-radius: 0 5px 5px 0;
   border: 1px solid #ccc;
   width: 100%;
+  height: 100%;
+}
+
+.input.left {
+  left: 0;
+  border-radius: 5px 0 0 5px !important;
 }
 
 .inp-cont {
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
 }
 
 .icon-container {
-  padding: 16px;
+  padding: 14px;
   width: 12%;
   border-radius: 5px 0 0 5px;
   background-color: #000;
@@ -24,4 +33,9 @@
 
 .input:focus {
   outline: none;
+}
+
+.icon-container.right {
+  right: 0;
+  border-radius: 0 5px 5px 0 !important;
 }

@@ -2,11 +2,10 @@ import "../css/views/Lessons.css";
 
 import React, { useState } from "react";
 
-import Card from "../components/Card";
 import wbishop from "../assets/images/pieces/wbishop.png";
 import wking from "../assets/images/pieces/wking.png";
 import wknight from "../assets/images/pieces/wknight.png";
-import wpawn from "../assets/images/pieces/pawn.png";
+import wpawn from "../assets/images/pieces/wpawn.png";
 import wqueen from "../assets/images/pieces/wqueen.png";
 import wrook from "../assets/images/pieces/wrook.png";
 

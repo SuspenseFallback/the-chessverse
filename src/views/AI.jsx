@@ -8,8 +8,9 @@ import { TabPanel, TabView } from "primereact/tabview";
 import AISelector from "../components/PlayPanel/AISelector";
 import AI_LEVEL_ONE from "../ai/200.js";
 import AI_LEVEL_THREE from "../ai/600.js";
+import AI_LEVEL_TEN from "../ai/2000.js";
 import AI_LEVEL_TWO from "../ai/400.js";
-import Board from "../components/Board";
+import CustomBoard from "../components/CustomBoard/CustomBoard";
 import { Toast } from "primereact/toast";
 import piecemove from "../assets/sounds/piecemove.mp3";
 import useSound from "use-sound";
@@ -49,7 +50,7 @@ const AI = () => {
     }
   }, [ai]);
 
-  useEffect(() => {}, turn);
+  useEffect(() => {}, [turn]);
 
   let onDrop = (sourceSquare, targetSquare) => {
     let move = null;
@@ -101,6 +102,7 @@ const AI = () => {
 
   const ai_move = () => {
     const ai_move = ai.makeMove();
+    console.log(ai_move);
 
     safeGameMutate((game) => {
       const move = game.move(ai_move);
@@ -202,15 +204,12 @@ const AI = () => {
     <div className="ai-container">
       <div className="game">
         <div className="game-board-container">
-          <Board
-            color={
-              start ? color : preferred_color === "any" ? "b" : preferred_color
-            }
-            isInteractive={start || !game_end}
-            position={position}
+          <CustomBoard
+            color={color}
+            isInteractive={start && !game_end}
             game={game}
-            arrows={true}
             onDrop={onDrop}
+            position={game.fen()}
           />
         </div>
         <TabView

@@ -62,7 +62,7 @@ const SignUp = () => {
       set_rule_4("success");
     }
 
-    if (password != confirmation) {
+    if (password !== confirmation) {
       set_rule_5("danger");
     } else {
       set_rule_5("success");

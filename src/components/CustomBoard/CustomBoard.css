@@ -9,13 +9,40 @@
 .custom-board {
   display: flex;
   flex-direction: column;
+  width: 70vh;
+  height: 70vh;
+}
+/* 
+@media screen and (min-width: 1254px) {
+  .custom-board {
+    display: flex;
+    flex-direction: column;
+    width: 42vh;
+    height: 42vh;
+  }
+} */
+
+.custom-board.black {
+  transform: rotate(180deg);
+}
+
+.custom-board.white {
+  transform: rotate(0deg);
+}
+
+.piece.black {
+  transform: rotate(180deg);
+}
+
+.square.border {
+  border: 5px #fff solid;
 }
 
 .row {
   display: flex;
   flex-direction: row;
-  height: 60px;
-  width: 480px;
+  height: 12.5%;
+  width: 100%;
 }
 
 .square {
@@ -38,4 +65,110 @@
 
 .row:nth-child(odd) .square:nth-child(even) {
   background-color: #9354ff;
+}
+
+.piece {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+}
+
+.row:nth-child(even) .square.active:nth-child(even) {
+  background-color: rgba(170, 0, 255, 0.3);
+}
+
+.row:nth-child(odd) .square.active:nth-child(odd) {
+  background-color: rgba(170, 0, 255, 0.3);
+}
+
+.row:nth-child(even) .square.active:nth-child(odd) {
+  background-color: rgba(255, 0, 221, 0.3);
+}
+
+.row:nth-child(odd) .square.active:nth-child(even) {
+  background-color: rgba(255, 0, 221, 0.3);
+}
+
+.row:nth-child(even) .square.highlighted:nth-child(even) {
+  background-color: #ff9595b9 !important;
+}
+
+.row:nth-child(odd) .square.highlighted:nth-child(odd) {
+  background-color: #ff9595b9 !important;
+}
+
+.row:nth-child(even) .square.highlighted:nth-child(odd) {
+  background-color: #ff6868b9 !important;
+}
+
+.row:nth-child(odd) .square.highlighted:nth-child(even) {
+  background-color: #ff6868b9 !important;
+}
+
+.row:nth-child(even) .square.possible:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.row:nth-child(odd) .square.possible:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.row:nth-child(even) .square.possible:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.row:nth-child(odd) .square.possible:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.piece.wpawn {
+  background-image: url("../../assets/images/pieces/wpawn.png");
+}
+
+.piece.bpawn {
+  background-image: url("../../assets/images/pieces/bpawn.png");
+}
+
+.piece.wknight {
+  background-image: url("../../assets/images/pieces/wknight.png");
+}
+
+.piece.bknight {
+  background-image: url("../../assets/images/pieces/bknight.png");
+}
+
+.piece.wbishop {
+  background-image: url("../../assets/images/pieces/wbishop.png");
+}
+
+.piece.bbishop {
+  background-image: url("../../assets/images/pieces/bbishop.png");
+}
+
+.piece.wrook {
+  background-image: url("../../assets/images/pieces/wrook.png");
+}
+
+.piece.brook {
+  background-image: url("../../assets/images/pieces/brook.png");
+}
+
+.piece.wqueen {
+  background-image: url("../../assets/images/pieces/wqueen.png");
+}
+
+.piece.bqueen {
+  background-image: url("../../assets/images/pieces/bqueen.png");
+}
+
+.piece.wking {
+  background-image: url("../../assets/images/pieces/wking.png");
+}
+
+.piece.bking {
+  background-image: url("../../assets/images/pieces/bking.png");
+}
+
+.square.border {
+  border: 5px solid #fff;
 }

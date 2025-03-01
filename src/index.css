@@ -1,10 +1,10 @@
 :root {
-  --primary-color-tint: #cbadff;
   --primary-color-tint-hover: #af81ff;
-  /* --primary-color: #6004ff; */
-  --primary-color: #6004ff;
-  --primary-color-hover: #4000af;
-  --primary-color-shade: #44325a;
+  --primary-color: #000000;
+  --primary-color-tint: #5c5c5c;
+  --primary-color-tint-hover: #494949;
+  --primary-color-hover: #1d0050;
+  --primary-color-shade: #000000;
 }
 
 body {

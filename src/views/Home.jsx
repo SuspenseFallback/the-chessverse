@@ -33,22 +33,26 @@ const Home = () => {
     };
   }, []);
 
+  const link = (to) => {
+    navigate(to);
+  };
+
   return (
     <main>
       <div className="box-container">
-        <div className="box box-1">
+        <div className="box box-1" onClick={() => link('/play?time="bullet"')}>
           <p className="title">Play a match</p>
           <img src={play} alt="Play" />
         </div>
-        <div className="box box-2">
+        <div className="box box-2" onClick={() => link("/puzzles/trainer")}>
           <p className="title">Try some puzzles</p>
           <img src={puzzles} alt="Puzzles" />
         </div>
-        <div className="box box-3">
+        <div className="box box-3" onClick={() => link("/lessons")}>
           <p className="title">Learn how to play</p>
           <img src={learn} alt="Learn" />
         </div>
-        <div className="box box-4">
+        <div className="box box-4" onClick={() => link("/drills")}>
           <p className="title">Do some drills</p>
           <img src={drill} alt="Drills" />
         </div>
